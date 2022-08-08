@@ -3,14 +3,14 @@
  * and adds these as custom values.
  * This should be applied to the root project:
  * <code> apply from: file('gradle-quality-check-issues.gradle') </code>
+ *
+ * Note: This is not configuration cache compatible
  */
 
 def buildScanApi = project.extensions.findByName('buildScan')
 if (!buildScanApi) {
     return
 }
-
-//FIXME Make Configuration cache compatible
 
 gradle.taskGraph.beforeTask { task ->
     if (!Capture.ReportingTask.isSupported(task)) {
