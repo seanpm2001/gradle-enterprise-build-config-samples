@@ -10,6 +10,8 @@ if (!buildScanApi) {
   return
 }
 
+//FIXME Make Configuration cache compatible
+
 buildScan {
   buildFinished {
     def confs = []
