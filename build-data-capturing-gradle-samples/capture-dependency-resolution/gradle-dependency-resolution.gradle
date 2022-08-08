@@ -10,21 +10,25 @@ if (!buildScanApi) {
   return
 }
 
-//FIXME Make Configuration cache compatible
-
-buildScan {
-  buildFinished {
-    def confs = []
-    allprojects { p ->
-      p.configurations.each { c ->
-        if (c.state == Configuration.State.RESOLVED && c.resolutionStrategy.resolveGraphToDetermineTaskDependencies()) {
-          confs.add c.identityPath
-        }
+gradle.taskGraph.whenReady {
+  def confs = []
+  allprojects { p ->
+    p.configurations.each { c ->
+      if (c.state == Configuration.State.RESOLVED && c.resolutionStrategy.resolveGraphToDetermineTaskDependencies()) {
+        confs.add c.identityPath
       }
     }
-
-    confs.each { conf ->
-      buildScan.value "Configuration resolved for task graph calculation", conf as String
-    }
   }
+
+  confs.each { conf ->
+    Capture.addbuildScanValue buildScanApi, "Configuration resolved for task graph calculation", conf as String
+  }
+}
+
+class Capture {
+
+  static void addbuildScanValue(api, key, value) {
+    api.value key, value
+  }
+
 }
